@@ -1,3 +1,6 @@
+<?php
+require __DIR__ . '/connectdb.php';
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -7,10 +10,6 @@
         <meta name="description" content="Team Rosters">
         <link rel="stylesheet" href="bootstrap_themed.css">
         <link rel="stylesheet" href="main.css">
-    <?php
-		//// Do proper changes to connectdb.php and include it here.
-		require __DIR__ . '/connectdb.php';
-	?>
     </head>
     <body>
     <div class="jumbotron">
