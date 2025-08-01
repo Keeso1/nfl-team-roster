@@ -3,35 +3,33 @@ session_start();
 ?>
 <?php
 function connectDB() {
-	// Debug: Check what environment variables are available
-	error_log("DATABASE_URL: " . ($_ENV['DATABASE_URL'] ?? 'not set'));
-	error_log("MYSQL_URL: " . ($_ENV['MYSQL_URL'] ?? 'not set'));
-	error_log("MYSQLHOST: " . ($_ENV['MYSQLHOST'] ?? 'not set'));
-	
-	// Check if we're in production (Railway) or local development
-	if (isset($_ENV['MYSQL_URL']) || isset($_ENV['DATABASE_URL'])) {
-		// Production: Parse DATABASE_URL or MYSQL_URL
-		$url_to_parse = $_ENV['DATABASE_URL'] ?? $_ENV['MYSQL_URL'];
-		$url = parse_url($url_to_parse);
+	// Check for Railway environment variables (in order of preference)
+	if (isset($_ENV['DATABASE_URL'])) {
+		// Option 1: Full DATABASE_URL
+		$url = parse_url($_ENV['DATABASE_URL']);
 		$servername = $url['host'];
 		$username = $url['user'];
 		$password = $url['pass'];
 		$db = ltrim($url['path'], '/');
 		$port = $url['port'] ?? 3306;
-	} elseif (isset($_ENV['MYSQLHOST'])) {
-		// Production: Use individual Railway MySQL variables
-		$servername = $_ENV['MYSQLHOST'];
-		$username = $_ENV['MYSQLUSER'];
-		$password = $_ENV['MYSQLPASSWORD'];
-		$db = $_ENV['MYSQLDATABASE'];
-		$port = $_ENV['MYSQLPORT'] ?? 3306;
-	} elseif (getenv('MYSQLHOST')) {
-		// Try getenv() instead of $_ENV
-		$servername = getenv('MYSQLHOST');
-		$username = getenv('MYSQLUSER');
-		$password = getenv('MYSQLPASSWORD');
-		$db = getenv('MYSQLDATABASE');
-		$port = getenv('MYSQLPORT') ?: 3306;
+	} elseif (isset($_ENV['DB_HOST'])) {
+		// Option 2: Individual DB_ variables
+		$servername = $_ENV['DB_HOST'];
+		$username = $_ENV['DB_USER'];
+		$password = $_ENV['DB_PASSWORD'];
+		$db = $_ENV['DB_NAME'];
+		$port = $_ENV['DB_PORT'] ?? 3306;
+	} elseif (isset($_ENV['RAILWAY_PROJECT_NAME'])) {
+		// Option 3: Railway detected but no DB vars - show helpful message
+		die("
+		<h1>❌ Database Not Connected</h1>
+		<p>Railway project detected but database environment variables are missing.</p>
+		<p><strong>Please visit:</strong> <a href='railway_setup.php'>Railway Setup Guide</a></p>
+		<p>Or add these variables to your PHP app service:</p>
+		<ul>
+		<li>DATABASE_URL = \${{ MySQL.MYSQL_URL }}</li>
+		</ul>
+		");
 	} else {
 		// Local development
 		$servername = "localhost";
@@ -41,15 +39,21 @@ function connectDB() {
 		$port = 3306;
 	}
 
-	// Debug output
-	error_log("Connecting to: $servername:$port, database: $db, user: $username");
-
 	// Create connection
 	$conn = new mysqli($servername, $username, $password, $db, $port);
 
 	// Check connection
 	if ($conn->connect_error) {
-    	die("Database connection failed: " . $conn->connect_error);
+		if (isset($_ENV['RAILWAY_PROJECT_NAME'])) {
+			die("
+			<h1>❌ Database Connection Failed</h1>
+			<p>Railway project detected but can't connect to database.</p>
+			<p><strong>Error:</strong> " . $conn->connect_error . "</p>
+			<p><strong>Please visit:</strong> <a href='railway_setup.php'>Railway Setup Guide</a></p>
+			");
+		} else {
+			die("Database connection failed: " . $conn->connect_error);
+		}
 	} 
 	return $conn;
 }// end connectDB		
