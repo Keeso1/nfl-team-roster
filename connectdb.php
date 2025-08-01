@@ -4,9 +4,9 @@ session_start();
 <?php
 function connectDB() {
 	// Check for Railway environment variables (in order of preference)
-	if (isset($_ENV['DATABASE_URL'])) {
+	if (isset($_ENV['MYSQL_URL'])) {
 		// Option 1: Full DATABASE_URL
-		$url = parse_url($_ENV['DATABASE_URL']);
+		$url = parse_url($_ENV['MYSQL_URL']);
 		$servername = $url['host'];
 		$username = $url['user'];
 		$password = $url['pass'];
