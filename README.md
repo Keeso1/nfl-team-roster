@@ -15,16 +15,9 @@ A PHP web application for managing NFL team rosters with user authentication and
 - Bootstrap CSS
 - HTML/CSS/JavaScript
 
-## Local Development
-1. Install XAMPP or similar PHP/MySQL environment
-2. Place files in your web server directory
-3. Import your database schema
-4. Access via `http://localhost/projektC/`
-
 ## Live Demo
-[Add your deployed URL here]
+https://nfl-team-roster-production.up.railway.app/home.php
 
 ## Database Schema
-- Teams table with fullName, creationDate, ownerName
 - Player management functionality
 - User authentication system
