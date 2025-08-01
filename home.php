@@ -66,5 +66,3 @@ require __DIR__ . '/connectdb.php';
         </div>
     </body>
 </html>
-
-<!-- https://php-web.edu.liu.se/~klabe908/729G28/projektC/home.php -->
