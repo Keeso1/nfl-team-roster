@@ -3,15 +3,23 @@ session_start();
 ?>
 <?php
 function connectDB() {
-	// Check if we're in production (Railway/Heroku) or local development
-	if (isset($_ENV['DATABASE_URL'])) {
-		// Production: Parse DATABASE_URL
-		$url = parse_url($_ENV['DATABASE_URL']);
+	// Check if we're in production (Railway) or local development
+	if (isset($_ENV['MYSQL_URL']) || isset($_ENV['DATABASE_URL'])) {
+		// Production: Parse DATABASE_URL or MYSQL_URL
+		$url_to_parse = $_ENV['DATABASE_URL'] ?? $_ENV['MYSQL_URL'];
+		$url = parse_url($url_to_parse);
 		$servername = $url['host'];
 		$username = $url['user'];
 		$password = $url['pass'];
 		$db = ltrim($url['path'], '/');
 		$port = $url['port'] ?? 3306;
+	} elseif (isset($_ENV['MYSQLHOST'])) {
+		// Production: Use individual Railway MySQL variables
+		$servername = $_ENV['MYSQLHOST'];
+		$username = $_ENV['MYSQLUSER'];
+		$password = $_ENV['MYSQLPASSWORD'];
+		$db = $_ENV['MYSQLDATABASE'];
+		$port = $_ENV['MYSQLPORT'] ?? 3306;
 	} else {
 		// Local development
 		$servername = "localhost";
