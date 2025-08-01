@@ -3,6 +3,11 @@ session_start();
 ?>
 <?php
 function connectDB() {
+	// Debug: Check what environment variables are available
+	error_log("DATABASE_URL: " . ($_ENV['DATABASE_URL'] ?? 'not set'));
+	error_log("MYSQL_URL: " . ($_ENV['MYSQL_URL'] ?? 'not set'));
+	error_log("MYSQLHOST: " . ($_ENV['MYSQLHOST'] ?? 'not set'));
+	
 	// Check if we're in production (Railway) or local development
 	if (isset($_ENV['MYSQL_URL']) || isset($_ENV['DATABASE_URL'])) {
 		// Production: Parse DATABASE_URL or MYSQL_URL
@@ -20,6 +25,13 @@ function connectDB() {
 		$password = $_ENV['MYSQLPASSWORD'];
 		$db = $_ENV['MYSQLDATABASE'];
 		$port = $_ENV['MYSQLPORT'] ?? 3306;
+	} elseif (getenv('MYSQLHOST')) {
+		// Try getenv() instead of $_ENV
+		$servername = getenv('MYSQLHOST');
+		$username = getenv('MYSQLUSER');
+		$password = getenv('MYSQLPASSWORD');
+		$db = getenv('MYSQLDATABASE');
+		$port = getenv('MYSQLPORT') ?: 3306;
 	} else {
 		// Local development
 		$servername = "localhost";
@@ -28,6 +40,9 @@ function connectDB() {
 		$db = "test";
 		$port = 3306;
 	}
+
+	// Debug output
+	error_log("Connecting to: $servername:$port, database: $db, user: $username");
 
 	// Create connection
 	$conn = new mysqli($servername, $username, $password, $db, $port);
