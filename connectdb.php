@@ -27,7 +27,7 @@ function connectDB() {
 		<p><strong>Please visit:</strong> <a href='railway_setup.php'>Railway Setup Guide</a></p>
 		<p>Or add these variables to your PHP app service:</p>
 		<ul>
-		<li>DATABASE_URL = \${{ MySQL.MYSQL_URL }}</li>
+		<li>MYSQL_URL = \${{ MySQL.MYSQL_URL }}</li>
 		</ul>
 		");
 	} else {
