@@ -26,7 +26,7 @@ echo "<h2>Step 3: Alternative - Use Service References</h2>";
 echo "<p>Or try adding these service references to your PHP app:</p>";
 echo "<table border='1' style='border-collapse: collapse; width: 100%;'>";
 echo "<tr><th>Variable Name</th><th>Variable Value</th></tr>";
-echo "<tr><td>DATABASE_URL</td><td>\${{ MySQL.MYSQL_URL }}</td></tr>";
+echo "<tr><td>MYSQL_URL</td><td>\${{ MySQL.MYSQL_URL }}</td></tr>";
 echo "</table>";
 echo "<p><em>Note: Replace 'MySQL' with your actual MySQL service name if different</em></p>";
 
